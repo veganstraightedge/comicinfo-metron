@@ -1,43 +1,49 @@
-# Comicinfo::Metron
+# comicinfo-metron
 
-TODO: Delete this and the text below, and describe your gem
+Looks up comic details in [Metron](https://metron.cloud), for the [comicinfo](https://github.com/veganstraightedge/comicinfo) gem.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/comicinfo/metron`. To experiment with that code, run `bin/console` for an interactive prompt.
+`ComicInfo::Metron` is a metadata source: it searches Metron for an issue, and returns what Metron knows about the one picked as a `ComicInfo::Issue`. See [Looking Up Details in Online Databases](https://github.com/veganstraightedge/comicinfo/blob/main/doc/metadata-sources.md).
+
+It's the Ruby counterpart of [ComicInfoMetron.swift](https://github.com/veganstraightedge/ComicInfoMetron.swift), and a sibling of [comicinfo-comic_vine](https://github.com/veganstraightedge/comicinfo-comic_vine).
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'comicinfo-metron'
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'comicinfo/metron'
+
+metron = ComicInfo::Metron.new token: 'your API token', user_agent: 'MyApp/1.0'
+
+issue   = ComicInfo.load 'path/to/ComicInfo.xml'
+matches = metron.matches issue    # best first
+found   = metron.issue matches[0] # after a person picks one
+updated = issue.with_blanks_filled_from found
+```
+
+- `matches` needs a Series and a Number; `missing_details` says so when either is blank. A Year is optional: when there is one, only issues with a cover dated that year are found.
+- It finds the issue with that number in every series whose name contains the issue's series, and ranks the matches by series name, then cover year.
+- A match has no `site_url`: Metron's issue pages are addressed by a slug its search results don't include.
+- `issue` reads the issue: series, volume, title (or else its first story's title), cover year and month, publisher, imprint, summary, genres, credits by role, characters, teams, story arcs, and the issue's Metron page as its web link.
+- A request Metron refuses raises `ComicInfo::Metron::HTTPError` (with its `status`, such as 401 for a wrong token), and a match whose ID isn't a Metron issue ID raises `ComicInfo::Metron::InvalidIssueIDError` (with its `id`). Both are `ComicInfo::Metron::Error`s.
+
+## Credit
+
+Comic details from [Metron](https://metron.cloud). Whatever shows Metron's data must credit and link to Metron (`metron.name`, `metron.home_url`).
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```sh
+bin/setup         # bundle install
+bundle exec rake  # specs and RuboCop
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/veganstraightedge/comicinfo-metron. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/veganstraightedge/comicinfo-metron/blob/main/CODE_OF_CONDUCT.md).
+The specs answer every request from a local server with a Metron response from `spec/fixtures/`, so they need no token or network. The fixtures follow the schemas of [Mokkari](https://github.com/Metron-Project/mokkari), Metron's Python client; they weren't recorded from the live API.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Comicinfo::Metron project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/veganstraightedge/comicinfo-metron/blob/main/CODE_OF_CONDUCT.md).
+[MIT](LICENSE.md)
