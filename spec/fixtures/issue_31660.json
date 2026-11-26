@@ -1,0 +1,129 @@
+{
+  "id": 31660,
+  "publisher": {
+    "id": 2,
+    "name": "Image"
+  },
+  "imprint": null,
+  "series": {
+    "id": 2290,
+    "name": "Saga",
+    "sort_name": "Saga",
+    "alt_names": [],
+    "volume": 1,
+    "year_began": 2012,
+    "series_type": {
+      "id": 1,
+      "name": "Ongoing Series"
+    },
+    "genres": [
+      {
+        "id": 3,
+        "name": "Fantasy"
+      },
+      {
+        "id": 10,
+        "name": "Science Fiction"
+      }
+    ],
+    "language": "en"
+  },
+  "number": "1",
+  "alt_number": "",
+  "title": "",
+  "name": [
+    "Chapter One"
+  ],
+  "cover_date": "2012-03-01",
+  "store_date": "2012-03-14",
+  "foc_date": null,
+  "price": "2.99",
+  "price_currency": "USD",
+  "rating": {
+    "id": 4,
+    "name": "Mature"
+  },
+  "sku": "",
+  "isbn": "",
+  "upc": "70985301166800111",
+  "page": 44,
+  "desc": "Two soldiers from opposite sides of a never-ending galactic war fall in love.",
+  "desc_is_solicitation": false,
+  "image": "https://static.metron.cloud/media/issue/2018/11/11/saga-1.jpg",
+  "cover_hash": "",
+  "arcs": [
+    {
+      "id": 500,
+      "name": "Chapter One",
+      "modified": "2024-01-01T00:00:00-05:00"
+    }
+  ],
+  "credits": [
+    {
+      "id": 1,
+      "creator": "Brian K. Vaughan",
+      "role": [
+        {
+          "id": 1,
+          "name": "Writer"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "creator": "Fiona Staples",
+      "role": [
+        {
+          "id": 2,
+          "name": "Artist"
+        },
+        {
+          "id": 7,
+          "name": "Cover"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "creator": "Fonografiks",
+      "role": [
+        {
+          "id": 6,
+          "name": "Letterer"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "creator": "Eric Stephenson",
+      "role": [
+        {
+          "id": 8,
+          "name": "Editor"
+        }
+      ]
+    }
+  ],
+  "characters": [
+    {
+      "id": 10,
+      "name": "Alana",
+      "modified": "2024-01-01T00:00:00-05:00"
+    },
+    {
+      "id": 11,
+      "name": "Marko",
+      "modified": "2024-01-01T00:00:00-05:00"
+    }
+  ],
+  "teams": [],
+  "universes": [],
+  "reprints": [],
+  "variants": [],
+  "average_rating": null,
+  "rating_count": 0,
+  "cv_id": 321297,
+  "gcd_id": 911609,
+  "resource_url": "https://metron.cloud/issue/saga-2012-1/",
+  "modified": "2024-01-01T00:00:00-05:00"
+}
