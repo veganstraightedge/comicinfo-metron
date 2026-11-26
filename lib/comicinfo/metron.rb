@@ -1,4 +1,6 @@
 require 'comicinfo'
+require_relative 'metron/client'
+require_relative 'metron/errors'
 require_relative 'metron/version'
 
 module ComicInfo
@@ -18,9 +20,7 @@ module ComicInfo
     # - user_agent: names the app, such as "MyApp/1.0"
     # - base_url: where the API is, for testing against a server of your own
     def initialize token:, user_agent:, base_url: BASE_URL
-      @base_url   = base_url
-      @token      = token
-      @user_agent = user_agent
+      @client = Client.new(base_url:, token:, user_agent:)
     end
 
     def name     = 'Metron'
@@ -33,7 +33,36 @@ module ComicInfo
       'Metron needs a Series and a Number to search for.'
     end
 
+    # The issues with the issue's number in every series whose name contains its series, best first.
+    #
+    # When the issue has a year, only issues with a cover dated that year are asked for.
+    def matches issue
+      cover_year = issue.year if issue.year.to_i.positive?
+      found      = client.find_issues cover_year:, number: present(issue.number), series: present(issue.series)
+      matches    = found.map { match_for it }
+
+      issue.rank matches
+    end
+
     private
+
+    attr_reader :client
+
+    # One issue from the issue list as a match.
+    #
+    # Metron's issue pages are addressed by a slug, which the list doesn't have, so it has no site URL.
+    def match_for found
+      series     = found.dig(:series, :name) || ''
+      heading    = present(found[:issue]) || "#{series} ##{found[:number]}"
+      cover_date = "Cover date #{present(found[:cover_date]) || 'unknown'}"
+
+      Match.new cover_date: found[:cover_date],
+                details:    cover_date,
+                heading:,
+                id:         found[:id].to_s,
+                number:     found[:number],
+                series:
+    end
 
     # The text, trimmed, or nil when it's blank
     def present text

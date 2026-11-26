@@ -1,4 +1,5 @@
 require 'comicinfo/metron'
+require_relative 'support/metron_server'
 
 # Paths to the files in spec/fixtures
 module FixtureHelpers
@@ -22,4 +23,10 @@ RSpec.configure do |config|
   end
 
   config.include FixtureHelpers
+
+  # A local Metron that answers with spec/fixtures, for the specs to look things up in
+  fixtures_directory = File.join __dir__, 'fixtures'
+  config.add_setting :metron_server, default: MetronServer.new(fixtures_directory:)
+  config.before(:suite) { config.metron_server.start }
+  config.after(:suite) { config.metron_server.stop }
 end
