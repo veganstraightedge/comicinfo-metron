@@ -77,4 +77,66 @@ RSpec.describe ComicInfo::Metron do
       expect { unnamed.matches issue }.to raise_error(ComicInfo::Metron::HTTPError, message) { expect(it.status).to eq 403 }
     end
   end
+
+  describe '#issue' do
+    subject(:found) { metron.issue match }
+
+    let(:match) { metron.matches(issue).first }
+
+    it 'has everything Metron knows' do
+      expect(found).to be_a ComicInfo::Issue
+      expect(found.series).to eq 'Saga'
+      expect(found.volume).to eq 1
+      expect(found.number).to eq '1'
+      expect(found.title).to eq 'Chapter One'
+      expect(found.count).to eq(-1)
+      expect(found.year).to eq 2012
+      expect(found.month).to eq 3
+      expect(found.day).to eq(-1)
+      expect(found.publisher).to eq 'Image'
+      expect(found.imprint).to eq ''
+      expect(found.summary).to eq 'Two soldiers from opposite sides of a never-ending galactic war fall in love.'
+      expect(found.genres).to eq ['Fantasy', 'Science Fiction']
+      expect(found.web_links).to eq ['https://metron.cloud/issue/saga-2012-1/']
+    end
+
+    it 'gives credits to their roles' do
+      expect(found.writer).to eq 'Brian K. Vaughan'
+      expect(found.penciller).to eq 'Fiona Staples'
+      expect(found.inker).to eq 'Fiona Staples'
+      expect(found.colorist).to eq ''
+      expect(found.letterer).to eq 'Fonografiks'
+      expect(found.cover_artist).to eq 'Fiona Staples'
+      expect(found.editor).to eq 'Eric Stephenson'
+      expect(found.translator).to eq ''
+    end
+
+    it 'has characters, teams and story arcs' do
+      expect(found.characters).to eq %w[Alana Marko]
+      expect(found.teams).to eq []
+      expect(found.story_arcs).to eq ['Chapter One']
+    end
+
+    it 'only fills the blanks of an issue it is added to' do
+      mine    = ComicInfo.load fixture_path('my_saga_1.xml')
+      updated = mine.with_blanks_filled_from found
+
+      expect(updated.series).to eq 'My Saga'
+      expect(updated.writer).to eq 'Me'
+      expect(updated.publisher).to eq 'Image'
+    end
+
+    it 'raises an error for a match whose ID is not a Metron issue ID' do
+      slug    = ComicInfo::Match.new heading: 'Saga (2012) #1', id: 'saga-2012-1', series: 'Saga'
+      message = "“saga-2012-1” isn't a Metron issue ID."
+
+      expect { metron.issue slug }.to raise_error(ComicInfo::Metron::InvalidIssueIDError, message) { expect(it.id).to eq 'saga-2012-1' }
+    end
+
+    it 'raises an HTTP error for an issue Metron does not have' do
+      missing = ComicInfo::Match.new heading: 'Nothing #1', id: '1', series: 'Nothing'
+
+      expect { metron.issue missing }.to raise_error(ComicInfo::Metron::HTTPError) { expect(it.status).to eq 404 }
+    end
+  end
 end

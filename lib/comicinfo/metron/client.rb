@@ -23,6 +23,9 @@ module ComicInfo
         get('issue/', parameters)[:results]
       end
 
+      # One issue, credits and all
+      def issue(id) = get "issue/#{id}/"
+
       private
 
       # Calls one API resource and returns its parsed response

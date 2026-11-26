@@ -1,6 +1,7 @@
 require 'comicinfo'
 require_relative 'metron/client'
 require_relative 'metron/errors'
+require_relative 'metron/found_issue'
 require_relative 'metron/version'
 
 module ComicInfo
@@ -42,6 +43,16 @@ module ComicInfo
       matches    = found.map { match_for it }
 
       issue.rank matches
+    end
+
+    # Everything Metron knows about the match's issue, as a ComicInfo::Issue
+    def issue match
+      id = Integer match.id, 10, exception: false
+      raise InvalidIssueIDError, match.id unless id
+
+      found = client.issue id
+
+      FoundIssue.new(issue: found).to_issue
     end
 
     private

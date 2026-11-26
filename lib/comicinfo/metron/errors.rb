@@ -12,5 +12,15 @@ module ComicInfo
         super("Metron answered with HTTP status #{status}.")
       end
     end
+
+    # A match's ID isn't a Metron issue ID, so it can't have come from Metron
+    class InvalidIssueIDError < Error
+      attr_reader :id
+
+      def initialize id
+        @id = id
+        super("“#{id}” isn't a Metron issue ID.")
+      end
+    end
   end
 end
